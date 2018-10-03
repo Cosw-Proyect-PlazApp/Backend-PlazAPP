@@ -10,10 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+
 /**
  * @author Santiago Carrillo
  * 8/21/17.
  */
+
 public class JwtFilter
     extends GenericFilterBean
 {
@@ -43,15 +48,15 @@ public class JwtFilter
 
             final String token = authHeader.substring( 7 );
 
-//            try
-//            {
-//                final Claims claims = Jwts.parser().setSigningKey( "secretkey" ).parseClaimsJws( token ).getBody();
-//                request.setAttribute( "claims", claims );
-//            }
-//            catch ( final SignatureException e )
-//            {
-//                throw new ServletException( "Invalid token" );
-//            }
+            try
+            {
+                final Claims claims = Jwts.parser().setSigningKey( "secretkey" ).parseClaimsJws( token ).getBody();
+                request.setAttribute( "claims", claims );
+            }
+            catch ( final SignatureException e )
+            {
+                throw new ServletException( "Invalid token" );
+            }
 
             filterChain.doFilter( servletRequest, response );
         }
